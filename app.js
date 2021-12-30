@@ -6,20 +6,34 @@ require('ethernet-ip');
 const app=express();
 
 const userRoutes=require('./routes/user');
-//Cors headers
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-  next();
-});
-//Mongodb connection
-mongoose.connect('mongodb+srv://isee:1234@cluster0.fb7yd.mongodb.net/isee?authSource=admin&replicaSet=atlas-10ra2g-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true',
-  { useNewUrlParser: true,
-    useUnifiedTopology: true })
-  .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion echouée !'));
-  app.use(bodyParser.json());
+//_____________________________________
+//require('dotenv/config');
+//Middlwares
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
+const cors = require('cors');
+
+//Connect to DB
+const url = process.env.DB_CONNECTION;
+const connect = mongoose.connect(url);
+
+connect.then((db) => {
+    console.log('Connected successfully !')
+}, (err) => { console.log(err); });
+
+
+//Routes
+//var usersRouter = require('./routes/usersRouter');
+
+//var app = express();
+//app.use('/users', usersRouter);
+
+
+app.use(logger('dev'));
+app.use(cors);
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
   app.use('/users',userRoutes);
   module.exports = app;

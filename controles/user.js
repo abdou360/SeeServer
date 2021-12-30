@@ -49,7 +49,7 @@ bcrypt.compare(req.body.password,user.password)
         return res.status(401).json({message:'mot de passe incorrecte !'});
     }
      res.status(200).json(user);
-     /*{
+    /* {
          userId:user._id,
          token: jwt.sign({userId:user._id},'RAndom_token_secret',
          {expiresIn:'24h'})
